@@ -1,8 +1,10 @@
+import asyncio
+import json
+import os
+
 import discord
 from discord.ext import commands
-import os
-import json
-import asyncio
+
 import config
 
 with open("data/bots.json", "r") as f:

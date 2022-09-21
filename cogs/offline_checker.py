@@ -1,9 +1,10 @@
-import discord
-from discord.ext import commands, tasks
-import requests
 import json
-import config
 
+import discord
+import requests
+from discord.ext import commands, tasks
+
+import config
 from bot import OfflineBot
 
 with open("data/bots.json", "r") as f:
