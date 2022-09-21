@@ -7,7 +7,10 @@ import config
 
 class MyClient(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=commands.when_mentioned_or(">"), intents=discord.Intents.default())
+        super().__init__(
+            command_prefix=commands.when_mentioned_or(">"),
+            intents=discord.Intents.default(),
+        )
 
     async def on_readu(self):
         print(f"Logged in as {self.user}")
@@ -29,6 +32,7 @@ async def main():
                 print(f"Loaded {filename[:-3]}")
 
         await client.start(config.BOT_TOKEN)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
