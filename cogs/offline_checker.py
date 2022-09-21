@@ -20,7 +20,7 @@ class OfflineChecker(commands.Cog):
         for bot in bots:
             try:
                 response = requests.request(
-                    "GET", f"http://:{bots[bot]['address']}:{bots[bot]['port']}/status"
+                    "GET", f"http://{bots[bot]['address']}:{bots[bot]['port']}/status"
                 )
             except requests.exceptions.ConnectionError:
                 response = None
@@ -41,7 +41,7 @@ class OfflineChecker(commands.Cog):
                 if not isinstance(channel, discord.TextChannel):
                     return
                 await channel.send(
-                    f"{bot} is now offline! :sob:\n<@652797071623192576><@602235481459261440>"
+                    f"{bot} is now offline! :sob:\n<@652797071623192576> <@602235481459261440>"
                 )
 
             elif response.status_code == 200:

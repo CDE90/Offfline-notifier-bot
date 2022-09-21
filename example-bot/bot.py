@@ -12,7 +12,7 @@ class MyClient(commands.Bot):
             intents=discord.Intents.default(),
         )
 
-    async def on_readu(self):
+    async def on_ready(self):
         print(f"Logged in as {self.user}")
 
 
