@@ -32,7 +32,7 @@ class OfflineChecker(commands.Cog):
         channel = self.client.get_channel(config.NOTIFICATION_CHANNEL)
         if not isinstance(channel, discord.TextChannel):
             return
-        await channel.send(f"{message}\n<@652797071623192576> <@602235481459261440>")
+        await channel.send(f"{message}\n{' '.join([f'<@{id}>' for id in config.MENTION_USERS])}")
 
     @tasks.loop(seconds=5)
     async def check_offline(self):
