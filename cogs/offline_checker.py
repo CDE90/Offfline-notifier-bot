@@ -1,5 +1,6 @@
 import json
 
+import aiohttp
 import discord
 import requests
 from discord.ext import commands, tasks
@@ -15,6 +16,23 @@ class OfflineChecker(commands.Cog):
     def __init__(self, client: OfflineBot):
         self.client = client
         self.check_offline.start()
+
+    async def notify(self, bot: str, online: bool):
+        print(f"{bot} is now {'online' if online else 'offline'}")
+
+        message = "{} is now {}".format(
+            bot, "online. :tada:" if online else "offline. :sob:"
+        )
+
+        async with aiohttp.ClientSession() as session:
+            for hook_url in config.WEBHOOK_URLS:
+                webhook = discord.Webhook.from_url(hook_url, session=session)
+                await webhook.send(message, username="Offline Notification")
+
+        channel = self.client.get_channel(config.NOTIFICATION_CHANNEL)
+        if not isinstance(channel, discord.TextChannel):
+            return
+        await channel.send(f"{message}\n<@652797071623192576> <@602235481459261440>")
 
     @tasks.loop(seconds=5)
     async def check_offline(self):
@@ -36,14 +54,7 @@ class OfflineChecker(commands.Cog):
                     bots[bot]["online"] = False
                     json.dump(bots, f, indent=4)
 
-                print(f"{bot} is now offline!")
-
-                channel = self.client.get_channel(config.NOTIFICATION_CHANNEL)
-                if not isinstance(channel, discord.TextChannel):
-                    return
-                await channel.send(
-                    f"{bot} is now offline! :sob:\n<@652797071623192576> <@602235481459261440>"
-                )
+                await self.notify(bot, False)
 
             elif response.status_code == 200:
 
@@ -56,15 +67,7 @@ class OfflineChecker(commands.Cog):
                     bots[bot]["online"] = True
                     json.dump(bots, f, indent=4)
 
-                print(f"{bot} is now online!")
-
-                channel = self.client.get_channel(config.NOTIFICATION_CHANNEL)
-
-                if not isinstance(channel, discord.TextChannel):
-                    return
-                await channel.send(
-                    f"{bot} is now online! :tada:\n<@652797071623192576><@602235481459261440>"
-                )
+                await self.notify(bot, True)
 
     @check_offline.before_loop
     async def before_check_offline(self):
